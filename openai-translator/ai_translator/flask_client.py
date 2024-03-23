@@ -1,0 +1,12 @@
+import requests
+import json
+from utils import LOG
+
+url = 'http://127.0.0.1:8000/translate'
+
+data = {'data': 'doubleTao'}
+files = {'file': 'test.pdf'} # open('flask_client.py', 'rb')
+
+res = requests.post(url=url, data=data, files=files)
+
+LOG.debug(f"响应: {res}\n")
