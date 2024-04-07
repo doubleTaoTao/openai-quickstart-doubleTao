@@ -4,16 +4,23 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
+
 # /root/openai-quickstart-doubleTao/langchain/sales_chatbot/real_estates_sale/index.faiss
 # Error: 'f' failed: could not open real_estates_sale/index.faiss for reading: No such file or directory
-def initialize_sales_bot(vector_store_dir: str = "real_estates_sale"):
+
+def initialize_sales_bot(vector_store_dir: str = "education_question_data"):
     db = FAISS.load_local(vector_store_dir, OpenAIEmbeddings(), allow_dangerous_deserialization=True)
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+    llm = ChatOpenAI(model_name="gpt-4", temperature=0.5)
     
-    global SALES_BOT    
+    global SALES_BOT   
+    # 仅使用Faiss查询 
+    # docs = db.similarity_search(query)
+    # print(docs[0].page_content)
+    
+    # Faiss + 大模型查询
     SALES_BOT = RetrievalQA.from_chain_type(llm,
                                            retriever=db.as_retriever(search_type="similarity_score_threshold",
-                                                                     search_kwargs={"score_threshold": 0.8}))
+                                                                     search_kwargs={"score_threshold": 0.7}))
     # 返回向量数据库的检索结果
     SALES_BOT.return_source_documents = True
 
@@ -34,22 +41,22 @@ def sales_chat(message, history):
         return ans["result"]
     # 否则输出套路话术
     else:
-        return "这个问题我要问问领导"
+        return "这个问题请咨询人工客服"
     
 
 def launch_gradio():
     demo = gr.ChatInterface(
         fn=sales_chat,
-        title="房产销售",
-        # retry_btn=None,
-        # undo_btn=None,
+        title="教育培训课程咨询机器人",
+        retry_btn=None,
+        undo_btn=None,
         chatbot=gr.Chatbot(height=600),
     )
 
     demo.launch(share=True, server_name="0.0.0.0")
 
 if __name__ == "__main__":
-    # 初始化房产销售机器人
+    # 初始化教育培训课程咨询机器人
     initialize_sales_bot()
     # 启动 Gradio 服务
     launch_gradio()

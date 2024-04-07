@@ -1,0 +1,8 @@
+import gradio as gr
+import cv2
+
+def to_black(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+gr.Interface(fn=to_black, inputs="image", outputs="image"
+             ).launch(share=True)
