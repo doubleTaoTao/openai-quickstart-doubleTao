@@ -20,7 +20,7 @@ def launch_gradio():
 
     iface = gr.Interface(
         fn=translation,
-        title="OpenAI-Translator v2.0(PDF 电子书翻译工具)",
+        title="ChatGLM-Translator v2.0(PDF 电子书翻译工具)",
         inputs=[
             gr.File(label="上传PDF文件"),
             gr.Textbox(label="源语言（默认：英文）", placeholder="English", value="English"),
@@ -32,7 +32,7 @@ def launch_gradio():
         allow_flagging="never"
     )
 
-    iface.launch(share=True, server_name="0.0.0.0")
+    iface.launch(share=True, server_name="0.0.0.0", server_port=8000)
 
 def initialize_translator():
     # 解析命令行
